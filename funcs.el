@@ -31,3 +31,14 @@ using `cargo-process-run'."
              (shell-quote-argument output-file-name)
              (shell-quote-argument input-file-name)
              (shell-quote-argument output-file-name)))))
+
+;; Copied from scala/completing-dot
+(defun rustrls/completing-dot ()
+  "Insert a period and show company completions."
+  (interactive "*")
+  (when (s-matches? (rx (+ (not space)))
+                    (buffer-substring (line-beginning-position) (point)))
+    (delete-horizontal-space t))
+  (company-abort)
+  (insert ".")
+  (company-complete))

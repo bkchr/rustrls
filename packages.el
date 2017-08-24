@@ -8,12 +8,14 @@
 ;; This file is not part of GNU Emacs.
 ;;
 ;;; License: GPLv3
+(add-to-list 'load-path "/home/bastian/.spacemacs.d/plugins/lsp-rust")
+(add-to-list 'load-path "/home/bastian/.spacemacs.d/plugins/lsp-mode")
 
 (setq rustrls-packages
   '(
-    lsp-mode
+    (lsp-mode :location "/home/bastian/.spacemacs.d/plugins/lsp-mode")
     (lsp-mode :requires flycheck)
-    lsp-rust
+    (lsp-rust :location "/home/bastian/.spacemacs.d/plugins/lsp-rust")
     cargo
     company
     flycheck
@@ -68,7 +70,10 @@
     (progn
       (spacemacs/set-leader-keys-for-major-mode 'rust-mode
         "=" 'rust-format-buffer
-        "q" 'spacemacs/rust-quick-run))))
+        "q" 'spacemacs/rust-quick-run)
+
+      (evil-define-key 'insert rust-mode-map
+        (kbd ".") 'rustrls/completing-dot))))
 
 (defun rustrls/init-toml-mode ()
   (use-package toml-mode
