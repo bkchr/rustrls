@@ -18,8 +18,6 @@
     (lsp-rust :location "/home/bastian/.spacemacs.d/plugins/lsp-rust")
     cargo
     company
-    flycheck
-    (flycheck-rust :requires flycheck)
     ggtags
     helm-gtags
     rust-mode
@@ -48,14 +46,6 @@
         "cu" 'cargo-process-update
         "cx" 'cargo-process-run
         "t" 'cargo-process-test))))
-
-(defun rustrls/post-init-flycheck ()
-  (spacemacs/enable-flycheck 'rust-mode))
-
-(defun rustrls/init-flycheck-rust ()
-  (use-package flycheck-rust
-    :defer t
-    :init (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)))
 
 (defun rustrls/post-init-ggtags ()
   (add-hook 'rust-mode-local-vars-hook #'spacemacs/ggtags-mode-enable))
