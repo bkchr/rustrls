@@ -13,18 +13,29 @@
 
 (setq rustrls-packages
   '(
+    rust-mode
     (lsp-mode :location "/home/bastian/.spacemacs.d/plugins/lsp-mode")
-    (lsp-mode :requires flycheck)
+    lsp-mode
     (lsp-rust :location "/home/bastian/.spacemacs.d/plugins/lsp-rust")
     cargo
     company
     flycheck
-    (flycheck-rust :requires flycheck)
     ggtags
     helm-gtags
-    rust-mode
     toml-mode
     ))
+
+(defun rustrls/init-rust-mode ()
+  (use-package rust-mode
+    :defer t
+    :init
+    (progn
+      (spacemacs/set-leader-keys-for-major-mode 'rust-mode
+        "=" 'rust-format-buffer
+        "q" 'spacemacs/rust-quick-run)
+
+      (evil-define-key 'insert rust-mode-map
+        (kbd ".") 'rustrls/completing-dot))))
 
 (defun rustrls/init-cargo ()
   (use-package cargo
@@ -52,28 +63,11 @@
 (defun rustrls/post-init-flycheck ()
   (spacemacs/enable-flycheck 'rust-mode))
 
-(defun rustrls/init-flycheck-rust ()
-  (use-package flycheck-rust
-    :defer t
-    :init (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)))
-
 (defun rustrls/post-init-ggtags ()
   (add-hook 'rust-mode-local-vars-hook #'spacemacs/ggtags-mode-enable))
 
 (defun rustrls/post-init-helm-gtags ()
   (spacemacs/helm-gtags-define-keys-for-mode 'rust-mode))
-
-(defun rustrls/init-rust-mode ()
-  (use-package rust-mode
-    :defer t
-    :init
-    (progn
-      (spacemacs/set-leader-keys-for-major-mode 'rust-mode
-        "=" 'rust-format-buffer
-        "q" 'spacemacs/rust-quick-run)
-
-      (evil-define-key 'insert rust-mode-map
-        (kbd ".") 'rustrls/completing-dot))))
 
 (defun rustrls/init-toml-mode ()
   (use-package toml-mode
@@ -83,7 +77,9 @@
   (spacemacs|add-company-backends
     :backends company-capf
     :modes rust-mode
-    :variables company-tooltip-align-annotations t))
+    :variables company-tooltip-align-annotations t
+  )
+)
 
 (defun rustrls/post-init-smartparens ()
   (with-eval-after-load 'smartparens
@@ -92,17 +88,21 @@
 
 (defun rustrls/init-lsp-mode ()
   (use-package lsp-mode
+    :config
+      (use-package lsp-flycheck
+        :ensure f ; comes with lsp-mode
+        :after flycheck
+      )
+  )
+)
+
+(defun rustrls/init-lsp-rust ()
+  (use-package lsp-rust
     :init
     (progn
+      ;; call the configured hook
       (spacemacs/add-to-hook 'rust-mode-hook '((lambda () (funcall rustrls-lsp-mode-hook))))
       (spacemacs/set-leader-keys-for-major-mode 'rust-mode
         "r" 'lsp-rename)
     )
-    :config
-    (use-package lsp-flycheck
-      :ensure f ; comes with lsp-mode
-      :after flycheck)))
-
-(defun rustrls/init-lsp-rust ()
-  (use-package lsp-rust
     :after lsp-mode))

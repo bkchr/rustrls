@@ -13,4 +13,4 @@
 
 (spacemacs|define-jump-handlers rust-mode)
 
-(defvar rustrls-lsp-mode-hook 'lsp-mode)
+(defvar rustrls-lsp-mode-hook 'lsp-rust-enable)
