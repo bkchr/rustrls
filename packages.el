@@ -18,7 +18,7 @@
     lsp-mode
     (lsp-rust :location "/home/bastian/.spacemacs.d/plugins/lsp-rust")
     cargo
-    company
+    company-lsp
     flycheck
     ggtags
     helm-gtags
@@ -73,11 +73,17 @@
   (use-package toml-mode
     :mode "/\\(Cargo.lock\\|\\.cargo/config\\)\\'"))
 
-(defun rustrls/post-init-company ()
-  (spacemacs|add-company-backends
-    :backends company-capf
-    :modes rust-mode
-    :variables company-tooltip-align-annotations t
+(defun rustrls/init-company-lsp ()
+  (use-package company-lsp
+    :init (progn
+            (spacemacs|add-company-backends
+              :backends company-lsp
+              :modes rust-mode
+              :variables company-tooltip-align-annotations t
+              )
+            (setq company-lsp-cache-candidates t)
+            (setq company-lsp-async t)
+            )
   )
 )
 
