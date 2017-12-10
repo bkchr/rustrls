@@ -11,9 +11,9 @@
 
 (setq rustrls-packages '(rust-mode lsp-mode
                                    lsp-rust
+                                   (lsp-ui require: flycheck)
                                    cargo
                                    (company-lsp require: lsp-mode)
-                                   flycheck
                                    ggtags
                                    helm-gtags
                                    toml-mode))
@@ -48,8 +48,8 @@
               "cx" 'cargo-process-run
               "t" 'cargo-process-test))))
 
-(defun rustrls/post-init-flycheck ()
-  (spacemacs/enable-flycheck 'rust-mode))
+;(defun rustrls/post-init-flycheck ()
+;  (spacemacs/enable-flycheck 'rust-mode))
 
 (defun rustrls/post-init-ggtags ()
   (add-hook 'rust-mode-local-vars-hook #'spacemacs/ggtags-mode-enable))
@@ -79,8 +79,24 @@
 
 (defun rustrls/init-lsp-mode ()
   (use-package lsp-mode
-    :config (use-package lsp-flycheck :ensure f
-              :after flycheck)))
+    :defer t))
+
+(defun rustrls/init-lsp-ui ()
+  (use-package lsp-ui
+    :defer t
+    :init (add-hook 'lsp-mode-hook 'lsp-ui-mode)
+    :config (progn (evil-define-minor-mode-key '(normal motion) 'lsp-xref-mode
+                     (kbd "j") 'lsp-xref--select-next
+                     (kbd "k") 'lsp-xref--select-prev
+                     (kbd "<return>") (lambda () (lsp-xref--goto-xref) (lsp-xref--abort))
+                     (kbd "<tab>") 'lsp-xref--toggle-file
+                     (kbd "<esc>") 'lsp-xref--abort
+                     (kbd "q") 'lsp-xref--abort)
+
+                   (spacemacs/set-leader-keys-for-major-mode 'rust-mode
+                     "g" 'lsp-xref-find-definitions
+                     "f" 'lsp-xref-find-references))
+    :after lsp-mode))
 
 (defun rustrls/init-lsp-rust ()
   (use-package lsp-rust
@@ -91,6 +107,7 @@
                                        (progn
                                          (setq tab-width 4)
                                          (funcall rustrls-lsp-mode-hook)))))
-            (spacemacs/set-leader-keys-for-major-mode
-              'rust-mode "=" 'lsp-format-buffer "r" 'lsp-rename)):after
-              lsp-mode))
+            (spacemacs/set-leader-keys-for-major-mode 'rust-mode
+              "=" 'lsp-format-buffer
+              "r" 'lsp-rename))
+    :after lsp-mode))
