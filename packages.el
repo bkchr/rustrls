@@ -14,6 +14,7 @@
                                    (lsp-ui require: flycheck)
                                    cargo
                                    (company-lsp require: lsp-mode)
+                                   flycheck
                                    ggtags
                                    helm-gtags
                                    toml-mode))
@@ -48,8 +49,8 @@
               "cx" 'cargo-process-run
               "t" 'cargo-process-test))))
 
-;(defun rustrls/post-init-flycheck ()
-;  (spacemacs/enable-flycheck 'rust-mode))
+(defun rustrls/post-init-flycheck ()
+  (spacemacs/enable-flycheck 'rust-mode))
 
 (defun rustrls/post-init-ggtags ()
   (add-hook 'rust-mode-local-vars-hook #'spacemacs/ggtags-mode-enable))
