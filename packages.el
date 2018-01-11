@@ -11,9 +11,9 @@
 
 (setq rustrls-packages '(rust-mode lsp-mode
                                    lsp-rust
-                                   (lsp-ui require: flycheck)
+                                   lsp-ui
                                    cargo
-                                   (company-lsp require: lsp-mode)
+                                   company-lsp
                                    flycheck
                                    ggtags
                                    helm-gtags
@@ -71,7 +71,8 @@
                                             :variables company-tooltip-align-annotations
                                             t)
             (setq company-lsp-cache-candidates t)
-            (setq company-lsp-async t))))
+            (setq company-lsp-async t))
+    :after lsp-mode))
 
 (defun rustrls/post-init-smartparens ()
   (with-eval-after-load 'smartparens
@@ -84,7 +85,7 @@
 
 (defun rustrls/init-lsp-ui ()
   (use-package lsp-ui
-    :defer t
+    :commands lsp-ui-mode
     :init (add-hook 'lsp-mode-hook 'lsp-ui-mode)
     :config (progn (evil-define-minor-mode-key '(normal motion) 'lsp-xref-mode
                      (kbd "j") 'lsp-xref--select-next
@@ -101,7 +102,7 @@
 
 (defun rustrls/init-lsp-rust ()
   (use-package lsp-rust
-    :init (progn
+    :config (progn
             ;; call the configured hook
             (spacemacs/add-to-hook 'rust-mode-hook
                                    '((lambda ()
@@ -111,4 +112,5 @@
             (spacemacs/set-leader-keys-for-major-mode 'rust-mode
               "=" 'lsp-format-buffer
               "r" 'lsp-rename))
-    :after lsp-mode))
+    :after lsp-mode
+    :defer t))
