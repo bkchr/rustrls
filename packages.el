@@ -15,6 +15,7 @@
                                    cargo
                                    company-lsp
                                    flycheck
+                                   evil-surround
                                    ggtags
                                    helm-gtags
                                    toml-mode))
@@ -114,3 +115,8 @@
               "r" 'lsp-rename))
     :after lsp-mode
     :defer t))
+
+;; don't insert tag with evil-surround and '<'
+(defun rustrls/post-init-evil-surround ()
+  (add-hook 'rust-mode-hook (lambda ()
+                              (push '(?< . ("< " . " >")) evil-surround-pairs-alist))))
