@@ -112,7 +112,8 @@
                                          (funcall rustrls-lsp-mode-hook)))))
             (spacemacs/set-leader-keys-for-major-mode 'rust-mode
               "=" 'lsp-format-buffer
-              "r" 'lsp-rename))
+              "r" 'lsp-rename
+	      "e" 'lsp-rust-explain-error-at-point))
     :after lsp-mode
     :defer t))
 
