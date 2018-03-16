@@ -2,23 +2,21 @@
 ;;
 ;; Copyright (c) 2012-2017 Sylvain Benner & Contributors
 ;;
-;; Author: Chris Hoeppner <me@mkaito.com>
+;; Author: NJBS <DoNotTrackMeUsingThis@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
 ;;
 ;; This file is not part of GNU Emacs.
 ;;
 ;;; License: GPLv3
 
-(setq rustrls-packages '(rust-mode lsp-mode
-                                   lsp-rust
-                                   lsp-ui
-                                   cargo
-                                   company-lsp
-                                   flycheck
-                                   evil-surround
-                                   ggtags
-                                   helm-gtags
-                                   toml-mode))
+(setq rustrls-packages '(rust-mode
+                         lsp-rust
+                         cargo
+                         company-lsp
+                         evil-surround
+                         ggtags
+                         helm-gtags
+                         toml-mode))
 
 (defun rustrls/init-rust-mode ()
   (use-package rust-mode
@@ -63,43 +61,13 @@
 (defun rustrls/init-toml-mode ()
   (use-package toml-mode :mode "/\\(Cargo.lock\\|\\.cargo/config\\)\\'"))
 
-(defun rustrls/init-company-lsp ()
-  (use-package company-lsp
-    :defer t
-    :init (progn
-            (spacemacs|add-company-backends :backends company-lsp
-                                            :modes rust-mode
-                                            :variables company-tooltip-align-annotations
-                                            t)
-            (setq company-lsp-cache-candidates t)
-            (setq company-lsp-async t))
-    :after lsp-mode))
+(defun rustrls/post-init-company-lsp ()
+  (spacemacs|add-company-backends :backends company-lsp :modes rust-mode :variables company-tooltip-align-annotations t))
 
 (defun rustrls/post-init-smartparens ()
   (with-eval-after-load 'smartparens
     ;; Don't pair lifetime specifiers
     (sp-local-pair 'rust-mode "'" nil :actions nil)))
-
-(defun rustrls/init-lsp-mode ()
-  (use-package lsp-mode
-    :defer t))
-
-(defun rustrls/init-lsp-ui ()
-  (use-package lsp-ui
-    :commands lsp-ui-mode
-    :init (add-hook 'lsp-mode-hook 'lsp-ui-mode)
-    :config (progn (evil-define-minor-mode-key '(normal motion) 'lsp-xref-mode
-                     (kbd "j") 'lsp-xref--select-next
-                     (kbd "k") 'lsp-xref--select-prev
-                     (kbd "<return>") (lambda () (lsp-xref--goto-xref) (lsp-xref--abort))
-                     (kbd "<tab>") 'lsp-xref--toggle-file
-                     (kbd "<esc>") 'lsp-xref--abort
-                     (kbd "q") 'lsp-xref--abort)
-
-                   (spacemacs/set-leader-keys-for-major-mode 'rust-mode
-                     "g" 'lsp-xref-find-definitions
-                     "f" 'lsp-xref-find-references))
-    :after lsp-mode))
 
 (defun rustrls/init-lsp-rust ()
   (use-package lsp-rust
@@ -111,10 +79,9 @@
                                          (setq tab-width 4)
                                          (funcall rustrls-lsp-mode-hook)))))
             (spacemacs/set-leader-keys-for-major-mode 'rust-mode
-              "=" 'lsp-format-buffer
-              "r" 'lsp-rename
-	      "e" 'lsp-rust-explain-error-at-point))
-    :after lsp-mode
+	      "e" 'lsp-rust-explain-error-at-point)
+	    (spacemacs/lsp-append-jump-handlers 'rust-mode)
+            (spacemacs/lsp-bind-keys-for-mode 'rust-mode))
     :defer t))
 
 ;; don't insert tag with evil-surround and '<'
