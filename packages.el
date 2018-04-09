@@ -14,6 +14,7 @@
                          cargo
                          company-lsp
                          evil-surround
+			 flycheck
                          ggtags
                          helm-gtags
                          toml-mode))
