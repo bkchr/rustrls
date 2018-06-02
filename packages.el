@@ -79,10 +79,11 @@
                                        (progn
                                          (setq tab-width 4)
                                          (funcall rustrls-lsp-mode-hook)))))
+            (spacemacs/lsp-bind-keys-for-mode 'rust-mode)
             (spacemacs/set-leader-keys-for-major-mode 'rust-mode
 	      "e" 'lsp-rust-explain-error-at-point)
 	    (spacemacs/lsp-append-jump-handlers 'rust-mode)
-            (spacemacs/lsp-bind-keys-for-mode 'rust-mode))
+            )
     :defer t))
 
 ;; don't insert tag with evil-surround and '<'
