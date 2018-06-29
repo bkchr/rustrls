@@ -14,7 +14,7 @@
                          cargo
                          company-lsp
                          evil-surround
-			 flycheck
+			                   flycheck
                          ggtags
                          helm-gtags
                          toml-mode))
@@ -89,4 +89,5 @@
 ;; don't insert tag with evil-surround and '<'
 (defun rustrls/post-init-evil-surround ()
   (add-hook 'rust-mode-hook (lambda ()
-                              (push '(?< . ("< " . " >")) evil-surround-pairs-alist))))
+                              (with-eval-after-load 'evil-surround
+                                (push '(?< . ("< " . " >")) evil-surround-pairs-alist)))))
